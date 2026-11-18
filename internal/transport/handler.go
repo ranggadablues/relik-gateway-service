@@ -3,6 +3,9 @@ package transport
 import (
 	"io/fs"
 	"net/http"
+	"os"
+	"relik-gateway-service/middleware"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -14,13 +17,17 @@ type SwaggerAssets struct {
 
 func NewHTTPHandler(swagger SwaggerAssets) http.Handler {
 	mux := mux.NewRouter()
+	mux.Use(middleware.CORSMiddleware)
 
 	// Mount service-specific routes
 	gateway := NewGateway()
 	RegisterUserRoutes(mux, gateway.User)
 	RegisterProductRoutes(mux, gateway.Product)
 
-	registerSwaggerRoutes(mux, swagger)
+	// Only expose Swagger UI and specs outside production
+	if !strings.EqualFold(os.Getenv("APP_ENV"), "prod") && !strings.EqualFold(os.Getenv("APP_ENV"), "production") {
+		registerSwaggerRoutes(mux, swagger)
+	}
 	return mux
 }
 

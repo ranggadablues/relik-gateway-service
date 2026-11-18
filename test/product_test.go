@@ -8,11 +8,11 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"lastlegends-gateway-service/internal/endpoint"
-	"lastlegends-gateway-service/internal/transport"
-	"lastlegends-gateway-service/test/mocks"
+	"relik-gateway-service/internal/endpoint"
+	"relik-gateway-service/internal/transport"
+	"relik-gateway-service/test/mocks"
 
-	pb "github.com/ranggadablues/lastlegends-proto-library/product-proto/pb"
+	pb "github.com/ranggadablues/relik-proto-library/product-proto/pb"
 )
 
 func TestGetProductsHandler(t *testing.T) {

@@ -25,7 +25,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/ListProductsResponse"
+              "$ref": "#/definitions/v1ListProductsResponse"
             }
           },
           "default": {
@@ -38,7 +38,6 @@
         "parameters": [
           {
             "name": "pageSize",
-            "description": "Optional simple pagination",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -52,7 +51,6 @@
           },
           {
             "name": "tag",
-            "description": "Optional filter by tag or band (simple examples)",
             "in": "query",
             "required": false,
             "type": "string"
@@ -76,7 +74,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/CreateProductResponse"
+              "$ref": "#/definitions/v1CreateProductResponse"
             }
           },
           "default": {
@@ -89,11 +87,10 @@
         "parameters": [
           {
             "name": "product",
-            "description": "supply the product without an id (server usually assigns)",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Product"
+              "$ref": "#/definitions/v1Product"
             }
           }
         ],
@@ -115,7 +112,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/GetProductByIdResponse"
+              "$ref": "#/definitions/v1GetProductByIdResponse"
             }
           },
           "default": {
@@ -145,7 +142,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/DeleteProductByIdResponse"
+              "$ref": "#/definitions/v1DeleteProductByIdResponse"
             }
           },
           "default": {
@@ -180,7 +177,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/UpdateProductByIdResponse"
+              "$ref": "#/definitions/v1UpdateProductByIdResponse"
             }
           },
           "default": {
@@ -202,7 +199,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Product"
+              "$ref": "#/definitions/v1Product"
             }
           }
         ],
@@ -218,39 +215,66 @@
     }
   },
   "definitions": {
-    "CreateProductResponse": {
+    "protobufAny": {
       "type": "object",
       "properties": {
-        "product": {
-          "$ref": "#/definitions/Product"
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
         }
       }
     },
-    "DeleteProductByIdResponse": {
+    "v1CreateProductResponse": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "$ref": "#/definitions/v1Product"
+        }
+      }
+    },
+    "v1DeleteProductByIdResponse": {
       "type": "object",
       "properties": {
         "success": {
-          "type": "boolean",
-          "title": "Optionally return the deleted id or empty"
+          "type": "boolean"
         }
       }
     },
-    "GetProductByIdResponse": {
+    "v1GetProductByIdResponse": {
       "type": "object",
       "properties": {
         "product": {
-          "$ref": "#/definitions/Product"
+          "$ref": "#/definitions/v1Product"
         }
       }
     },
-    "ListProductsResponse": {
+    "v1ListProductsResponse": {
       "type": "object",
       "properties": {
         "products": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/Product"
+            "$ref": "#/definitions/v1Product"
           }
         },
         "nextPageToken": {
@@ -258,12 +282,12 @@
         }
       }
     },
-    "Product": {
+    "v1Product": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "title": "Use string for MongoDB ObjectId"
+          "title": "MongoDB ObjectId as hex string"
         },
         "name": {
           "type": "string"
@@ -304,41 +328,13 @@
           "type": "string"
         }
       },
-      "title": "Product message (maps from your MongoDB document)"
+      "title": "Product message (wire model)"
     },
-    "UpdateProductByIdResponse": {
+    "v1UpdateProductByIdResponse": {
       "type": "object",
       "properties": {
         "success": {
           "type": "boolean"
-        }
-      }
-    },
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "@type": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": {}
-    },
-    "rpcStatus": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/protobufAny"
-          }
         }
       }
     }

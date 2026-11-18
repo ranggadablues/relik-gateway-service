@@ -3,9 +3,9 @@ package transport
 import (
 	"os"
 
-	"lastlegends-gateway-service/internal/service"
+	"relik-gateway-service/internal/service"
 
-	"lastlegends-gateway-service/internal/endpoint"
+	"relik-gateway-service/internal/endpoint"
 )
 
 type Gateway struct {

@@ -8,25 +8,25 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"lastlegends-gateway-service/internal/endpoint"
-	"lastlegends-gateway-service/internal/transport"
-	"lastlegends-gateway-service/test/mocks"
+	"relik-gateway-service/internal/endpoint"
+	"relik-gateway-service/internal/transport"
+	"relik-gateway-service/test/mocks"
 
 	"github.com/gorilla/mux"
-	pb "github.com/ranggadablues/lastlegends-proto-library/user-proto/pb"
+	pb "github.com/ranggadablues/relik-proto-library/user-proto/pb"
 )
 
 func TestGetUserSuccess(t *testing.T) {
-	const firstname = "Test User"
+	const testEmail = "test@mail.com"
 	mockUserService := &mocks.MockUserService{
 		GetUsersFn: func(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
-			return &pb.ListUsersResponse{Users: []*pb.User{{Id: "123", Firstname: firstname}}}, nil
+			return &pb.ListUsersResponse{Users: []*pb.User{{Id: "123", Email: testEmail}}}, nil
 		},
 		GetUserByIdFn: func(ctx context.Context, req *pb.GetUserByIdRequest) (*pb.GetUserByIdResponse, error) {
-			return &pb.GetUserByIdResponse{User: &pb.User{Id: "123", Firstname: firstname}}, nil
+			return &pb.GetUserByIdResponse{User: &pb.User{Id: "123", Email: testEmail}}, nil
 		},
-		CreateUserFn: func(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
-			return &pb.CreateUserResponse{User: &pb.User{Id: "123", Firstname: firstname}}, nil
+		CreateUserFn: func(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateBasicUserResponse, error) {
+			return &pb.CreateBasicUserResponse{Link: "fake-link"}, nil
 		},
 		UpdateUserFn: func(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
 			return &pb.UpdateUserResponse{Success: true}, nil
@@ -43,7 +43,7 @@ func TestGetUserSuccess(t *testing.T) {
 	}
 
 	router := mux.NewRouter()
-	eps := endpoint.UserEndpoints{Service: mockUserService}
+	eps := endpoint.MakeUserEndpoints(mockUserService)
 	transport.RegisterUserRoutes(router, eps)
 
 	body := `{"email":"test@mail.com","password":"123"}`

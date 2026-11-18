@@ -3,18 +3,21 @@ package mocks
 import (
 	"context"
 
-	pb "github.com/ranggadablues/lastlegends-proto-library/user-proto/pb"
+	pb "github.com/ranggadablues/relik-proto-library/user-proto/pb"
 )
 
 type MockUserService struct {
-	GetUsersFn     func(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error)
-	GetUserByIdFn  func(ctx context.Context, req *pb.GetUserByIdRequest) (*pb.GetUserByIdResponse, error)
-	GetUserByMeFn  func(ctx context.Context, req *pb.Empty) (*pb.AuthResponse, error)
-	CreateUserFn   func(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error)
-	UpdateUserFn   func(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error)
-	DeleteUserFn   func(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error)
-	LoginUserFn    func(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error)
-	RefreshTokenFn func(ctx context.Context, req *pb.RefreshRequest) (*pb.LoginResponse, error)
+	GetUsersFn         func(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error)
+	GetUserByIdFn      func(ctx context.Context, req *pb.GetUserByIdRequest) (*pb.GetUserByIdResponse, error)
+	GetUserByMeFn      func(ctx context.Context, req *pb.Empty) (*pb.AuthResponse, error)
+	CreateUserFn       func(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateBasicUserResponse, error)
+	UpdateUserFn       func(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error)
+	DeleteUserFn       func(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error)
+	LoginUserFn        func(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error)
+	RefreshTokenFn     func(ctx context.Context, req *pb.RefreshRequest) (*pb.LoginResponse, error)
+	GoogleLoginFn      func(ctx context.Context, req *pb.GoogleLoginRequest) (*pb.GoogleAuthResponse, error)
+	FacebookLoginFn    func(ctx context.Context, req *pb.FacebookLoginRequest) (*pb.FacebookAuthResponse, error)
+	UserVerificationFn func(ctx context.Context, req *pb.UserVerificationRequest) (*pb.UserVerificationResponse, error)
 }
 
 func (m *MockUserService) GetUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
@@ -26,7 +29,7 @@ func (m *MockUserService) GetUserById(ctx context.Context, req *pb.GetUserByIdRe
 func (m *MockUserService) GetUserByMe(ctx context.Context, req *pb.Empty) (*pb.AuthResponse, error) {
 	return m.GetUserByMeFn(ctx, req)
 }
-func (m *MockUserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+func (m *MockUserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateBasicUserResponse, error) {
 	return m.CreateUserFn(ctx, req)
 }
 func (m *MockUserService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
@@ -40,4 +43,13 @@ func (m *MockUserService) LoginUser(ctx context.Context, req *pb.LoginRequest) (
 }
 func (m *MockUserService) RefreshToken(ctx context.Context, req *pb.RefreshRequest) (*pb.LoginResponse, error) {
 	return m.RefreshTokenFn(ctx, req)
+}
+func (m *MockUserService) GoogleLogin(ctx context.Context, req *pb.GoogleLoginRequest) (*pb.GoogleAuthResponse, error) {
+	return m.GoogleLoginFn(ctx, req)
+}
+func (m *MockUserService) FacebookLogin(ctx context.Context, req *pb.FacebookLoginRequest) (*pb.FacebookAuthResponse, error) {
+	return m.FacebookLoginFn(ctx, req)
+}
+func (m *MockUserService) UserVerification(ctx context.Context, req *pb.UserVerificationRequest) (*pb.UserVerificationResponse, error) {
+	return m.UserVerificationFn(ctx, req)
 }

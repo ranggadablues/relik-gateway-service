@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	pb "github.com/ranggadablues/lastlegends-proto-library/product-proto/pb"
+	pb "github.com/ranggadablues/relik-proto-library/product-proto/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

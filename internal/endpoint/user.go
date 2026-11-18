@@ -1,7 +1,7 @@
 package endpoint
 
 import (
-	"lastlegends-gateway-service/internal/service"
+	"relik-gateway-service/internal/service"
 )
 
 type UserEndpoints struct {
