@@ -2,6 +2,7 @@ package test
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -9,21 +10,23 @@ import (
 
 	"relik-gateway-service/internal/endpoint"
 	"relik-gateway-service/internal/transport"
+	"relik-gateway-service/test/mocks"
 
 	"github.com/gorilla/mux"
+	pb "github.com/ranggadablues/relik-proto-library/user-proto/pb"
 )
 
 func TestGetUserSuccess(t *testing.T) {
-	const firstname = "Test User"
-	/* mockUserService := &mocks.MockUserService{
+	const testEmail = "test@mail.com"
+	mockUserService := &mocks.MockUserService{
 		GetUsersFn: func(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
-			return &pb.ListUsersResponse{Users: []*pb.User{{Id: "123", Name: firstname}}}, nil
+			return &pb.ListUsersResponse{Users: []*pb.User{{Id: "123", Email: testEmail}}}, nil
 		},
 		GetUserByIdFn: func(ctx context.Context, req *pb.GetUserByIdRequest) (*pb.GetUserByIdResponse, error) {
-			return &pb.GetUserByIdResponse{User: &pb.User{Id: "123", Name: firstname}}, nil
+			return &pb.GetUserByIdResponse{User: &pb.User{Id: "123", Email: testEmail}}, nil
 		},
-		CreateUserFn: func(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
-			return &pb.CreateUserResponse{User: &pb.User{Id: "123", Name: firstname}}, nil
+		CreateUserFn: func(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateBasicUserResponse, error) {
+			return &pb.CreateBasicUserResponse{Link: "fake-link"}, nil
 		},
 		UpdateUserFn: func(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
 			return &pb.UpdateUserResponse{Success: true}, nil
@@ -37,10 +40,10 @@ func TestGetUserSuccess(t *testing.T) {
 				RefreshToken: "fake-refresh-456",
 			}, nil
 		},
-	} */
+	}
 
 	router := mux.NewRouter()
-	eps := endpoint.UserEndpoints{}
+	eps := endpoint.MakeUserEndpoints(mockUserService)
 	transport.RegisterUserRoutes(router, eps)
 
 	body := `{"email":"test@mail.com","password":"123"}`
