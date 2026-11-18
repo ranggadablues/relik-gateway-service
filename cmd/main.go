@@ -6,9 +6,10 @@ import (
 	"os"
 	"time"
 
-	"lastlegends-gateway-service/internal/transport"
+	"relik-gateway-service/internal/transport"
+	"relik-gateway-service/middleware"
 
-	appEmbed "lastlegends-gateway-service"
+	appEmbed "relik-gateway-service"
 
 	"github.com/joho/godotenv"
 	logger "github.com/ranggadablues/gosok/logger"
@@ -21,11 +22,16 @@ func main() {
 	//
 	dir, err := os.Getwd()
 	if err != nil {
-		log.LogErrorLevel("msg", "Dir not found with error: "+err.Error())
+		log.Error("msg", "Dir not found with error: "+err.Error())
 	}
 	env := fmt.Sprintf("%s/.env", dir)
 	if err := godotenv.Load(env); err != nil {
-		log.LogErrorLevel("msg", "No .env file found: "+err.Error())
+		log.Error("msg", "No .env file found: "+err.Error())
+	}
+
+	if err := middleware.InitAuth(); err != nil {
+		log.Error("msg", "failed to init auth: "+err.Error())
+		panic(err)
 	}
 
 	handler := transport.NewHTTPHandler(
@@ -37,8 +43,7 @@ func main() {
 
 	gatewayPort := os.Getenv("GATEWAY_SERVICE_PORT")
 	gatewayRunPort := fmt.Sprintf(":%s", gatewayPort)
-	message := fmt.Sprintf("Gateway running on %s", gatewayRunPort)
-	log.LogInfoLevel("msg", message)
+	log.Info("Gateway service running", "addr", gatewayRunPort)
 
 	srv := &http.Server{
 		Addr:         gatewayRunPort,
@@ -49,7 +54,7 @@ func main() {
 	}
 
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.LogErrorLevel("msg", err.Error())
+		log.Error("msg", err.Error())
 		panic(err)
 	}
 }

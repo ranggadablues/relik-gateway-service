@@ -3,7 +3,7 @@ package mocks
 import (
 	"context"
 
-	pb "github.com/ranggadablues/lastlegends-proto-library/product-proto/pb"
+	pb "github.com/ranggadablues/relik-proto-library/product-proto/pb"
 )
 
 type MockProductService struct {

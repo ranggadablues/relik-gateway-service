@@ -3,18 +3,20 @@ package transport
 import (
 	"net/http"
 
-	"lastlegends-gateway-service/middleware"
+	"relik-gateway-service/middleware"
 
-	"lastlegends-gateway-service/internal/service"
+	"relik-gateway-service/internal/service"
 
-	"lastlegends-gateway-service/internal/endpoint"
+	"relik-gateway-service/internal/endpoint"
 
-	"lastlegends-gateway-service/helper"
+	"relik-gateway-service/helper"
 
 	"github.com/gorilla/mux"
 	"github.com/ranggadablues/gosok/common"
-	pb "github.com/ranggadablues/lastlegends-proto-library/product-proto/pb"
+	pb "github.com/ranggadablues/relik-proto-library/product-proto/pb"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func RegisterProductRoutes(mux *mux.Router, eps endpoint.ProductEndpoints) {
@@ -78,6 +80,11 @@ func getProductByIdHandler(w http.ResponseWriter, r *http.Request, productServic
 }
 
 func createProductHandler(w http.ResponseWriter, r *http.Request, productService service.IProductService) {
+	if !middleware.IsAdmin(r) {
+		helper.WriteErrorHeader(w, status.Error(codes.PermissionDenied, "forbidden: admin access required"))
+		return
+	}
+
 	var body pb.Product
 	if err := common.Payload(&body, r); err != nil {
 		helper.WriteErrorHeader(w, err)
@@ -96,6 +103,11 @@ func createProductHandler(w http.ResponseWriter, r *http.Request, productService
 }
 
 func updateProductByIdHandler(w http.ResponseWriter, r *http.Request, productService service.IProductService) {
+	if !middleware.IsAdmin(r) {
+		helper.WriteErrorHeader(w, status.Error(codes.PermissionDenied, "forbidden: admin access required"))
+		return
+	}
+
 	vars := mux.Vars(r)
 	var payload bson.M
 	if err := common.Payload(&payload, r); err != nil {
@@ -109,7 +121,7 @@ func updateProductByIdHandler(w http.ResponseWriter, r *http.Request, productSer
 		helper.WriteErrorHeader(w, err)
 		return
 	}
-	bson.Unmarshal(bsonBytes, &body)
+	_ = bson.Unmarshal(bsonBytes, &body)
 	req := &pb.UpdateProductByIdRequest{
 		Id:      vars["id"],
 		Product: &body,
@@ -125,6 +137,11 @@ func updateProductByIdHandler(w http.ResponseWriter, r *http.Request, productSer
 }
 
 func deleteProductByIdHandler(w http.ResponseWriter, r *http.Request, productService service.IProductService) {
+	if !middleware.IsAdmin(r) {
+		helper.WriteErrorHeader(w, status.Error(codes.PermissionDenied, "forbidden: admin access required"))
+		return
+	}
+
 	vars := mux.Vars(r)
 	req := &pb.DeleteProductByIdRequest{
 		Id: vars["id"],

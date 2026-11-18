@@ -25,7 +25,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/LoginResponse"
+              "$ref": "#/definitions/v1LoginResponse"
             }
           },
           "default": {
@@ -57,7 +57,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/ListUsersResponse"
+              "$ref": "#/definitions/v1ListUsersResponse"
             }
           },
           "default": {
@@ -85,7 +85,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/LoginResponse"
+              "$ref": "#/definitions/v1LoginResponse"
             }
           },
           "default": {
@@ -101,7 +101,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/LoginRequest"
+              "$ref": "#/definitions/v1LoginRequest"
             }
           }
         ],
@@ -118,7 +118,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/AuthResponse"
+              "$ref": "#/definitions/v1AuthResponse"
             }
           },
           "default": {
@@ -147,7 +147,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/CreateUserResponse"
+              "$ref": "#/definitions/v1CreateBasicUserResponse"
             }
           },
           "default": {
@@ -160,11 +160,11 @@
         "parameters": [
           {
             "name": "body",
-            "description": "Request message for creating a new user.\nWe include the raw password here as it will be hashed by the server.",
+            "description": "Request message for creating a new user.",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/CreateUserRequest"
+              "$ref": "#/definitions/v1CreateUserRequest"
             }
           }
         ],
@@ -178,6 +178,43 @@
         ]
       }
     },
+    "/users/verify/{token}": {
+      "get": {
+        "summary": "User Activation Verification (no authentication)",
+        "operationId": "UserService_UserVerification",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UserVerificationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "module",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
     "/users/{id}": {
       "get": {
         "summary": "Get user by ID",
@@ -187,7 +224,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/GetUserByIdResponse"
+              "$ref": "#/definitions/v1GetUserByIdResponse"
             }
           },
           "default": {
@@ -228,7 +265,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/DeleteUserResponse"
+              "$ref": "#/definitions/v1DeleteUserResponse"
             }
           },
           "default": {
@@ -264,7 +301,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/UpdateUserResponse"
+              "$ref": "#/definitions/v1UpdateUserResponse"
             }
           },
           "default": {
@@ -288,7 +325,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/UserUpdate"
+              "$ref": "#/definitions/v1UserUpdate"
             }
           }
         ],
@@ -304,179 +341,6 @@
     }
   },
   "definitions": {
-    "AuthResponse": {
-      "type": "object",
-      "properties": {
-        "userid": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "firstname": {
-          "type": "string"
-        },
-        "lastname": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        }
-      }
-    },
-    "CreateUserRequest": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/User"
-        }
-      },
-      "description": "Request message for creating a new user.\nWe include the raw password here as it will be hashed by the server."
-    },
-    "CreateUserResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/User"
-        }
-      },
-      "description": "Response message after a user is created.\nIt returns the newly created User object."
-    },
-    "DeleteUserResponse": {
-      "type": "object",
-      "properties": {
-        "success": {
-          "type": "boolean"
-        }
-      },
-      "description": "Response message for list users."
-    },
-    "GetUserByIdResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/User"
-        }
-      },
-      "description": "Response message for getting a user."
-    },
-    "ListUsersResponse": {
-      "type": "object",
-      "properties": {
-        "users": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/User"
-          }
-        }
-      },
-      "description": "Response message for list users."
-    },
-    "LoginRequest": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        }
-      }
-    },
-    "LoginResponse": {
-      "type": "object",
-      "properties": {
-        "token": {
-          "type": "string"
-        },
-        "refreshToken": {
-          "type": "string",
-          "title": "refresh token"
-        }
-      }
-    },
-    "UpdateUserResponse": {
-      "type": "object",
-      "properties": {
-        "success": {
-          "type": "boolean"
-        }
-      },
-      "description": "Response message after a user is updated."
-    },
-    "User": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "title": "ObjectID as hex string"
-        },
-        "firstname": {
-          "type": "string"
-        },
-        "lastname": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        },
-        "accesskey": {
-          "type": "string"
-        },
-        "isactive": {
-          "type": "boolean"
-        },
-        "createby": {
-          "type": "string"
-        },
-        "createdat": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updateby": {
-          "type": "string"
-        },
-        "updatedat": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "description": "The core data model for a User.\nField numbers (1, 2, 3...) are unique identifiers and should never be changed."
-    },
-    "UserUpdate": {
-      "type": "object",
-      "properties": {
-        "firstname": {
-          "type": "string"
-        },
-        "lastname": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        },
-        "accesskey": {
-          "type": "string"
-        },
-        "updatedby": {
-          "type": "string"
-        },
-        "updatedat": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "isactive": {
-          "type": "boolean"
-        }
-      }
-    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -502,6 +366,244 @@
             "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
+        }
+      }
+    },
+    "v1AuthResponse": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateBasicUserResponse": {
+      "type": "object",
+      "properties": {
+        "link": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        },
+        "userDetails": {
+          "$ref": "#/definitions/v1UserDetails"
+        }
+      },
+      "description": "Request message for creating a new user."
+    },
+    "v1DeleteUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "description": "Response message for delete user."
+    },
+    "v1GetUserByIdResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1User"
+        }
+      },
+      "description": "Response message for getting a user."
+    },
+    "v1ListUsersResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1User"
+          }
+        }
+      },
+      "description": "Response message for list users."
+    },
+    "v1LoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "v1LoginResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UpdateUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "description": "Response message after a user is updated."
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "ObjectID as hex string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "createdSource": {
+          "type": "string"
+        },
+        "userDetailsIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "The core data model for a User."
+    },
+    "v1UserDetails": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "ObjectID as hex string"
+        },
+        "isDefault": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "confirmPassword": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "zipcode": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "dob": {
+          "type": "string"
+        },
+        "termsAndPrivacyAccepted": {
+          "type": "boolean"
+        },
+        "subscribeNewsletter": {
+          "type": "boolean"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1UserUpdate": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "accessKey": {
+          "type": "string"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "createdSource": {
+          "type": "string"
+        },
+        "userDetailsId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1UserVerificationResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
         }
       }
     }

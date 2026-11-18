@@ -1,0 +1,14 @@
+.git
+.github
+.gitignore
+.DS_Store
+Dockerfile
+.dockerignore
+.env
+.env.*
+**/.env
+**/.env.*
+temp_debug
+test
+*_test.go
+*.test

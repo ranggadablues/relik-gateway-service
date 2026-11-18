@@ -63,7 +63,7 @@ func gRPCError(w http.ResponseWriter, code int, message string) {
 		Code:    code,
 		Meta:    Meta{Timestamp: time.Now().UTC().Format(time.RFC3339)},
 	}
-	writeJSON(w, code, resp)
+	writeJSON(w, http.StatusOK, resp)
 }
 
 // Send error JSON
@@ -107,7 +107,7 @@ func grpcToHTTP(code codes.Code) int {
 }
 
 // Internal helper
-func writeJSON(w http.ResponseWriter, code int, v interface{}) {
+func writeJSON(w http.ResponseWriter, code int, v APIResponse) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	_ = json.NewEncoder(w).Encode(v)
