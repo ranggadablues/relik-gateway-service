@@ -24,8 +24,10 @@ func NewHTTPHandler(swagger SwaggerAssets) http.Handler {
 	RegisterUserRoutes(mux, gateway.User)
 	RegisterProductRoutes(mux, gateway.Product)
 
-	// Only expose Swagger UI and specs outside production
-	if !strings.EqualFold(os.Getenv("APP_ENV"), "prod") && !strings.EqualFold(os.Getenv("APP_ENV"), "production") {
+	// Expose Swagger UI and specs outside production, or when explicitly enabled via ENABLE_SWAGGER=true
+	isProd := strings.EqualFold(os.Getenv("APP_ENV"), "prod") || strings.EqualFold(os.Getenv("APP_ENV"), "production")
+	enableSwagger := strings.EqualFold(os.Getenv("ENABLE_SWAGGER"), "true")
+	if !isProd || enableSwagger {
 		registerSwaggerRoutes(mux, swagger)
 	}
 	return mux
